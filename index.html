@@ -419,6 +419,33 @@
             border-top: 1px solid var(--border-color);
         }
 
+        .pipeline-input-cards-stacked {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .pipeline-input-cards-stacked .pipeline-input-card {
+            width: 100px;
+        }
+
+        .pipeline-output-video {
+            width: 100%;
+            max-width: 550px;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+
+        .pipeline-output-video video {
+            display: block;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
         .pipeline-arrow {
             font-size: 2rem;
             color: var(--accent);
@@ -1305,7 +1332,7 @@
                 <div class="pipeline-branch">
                     <div class="pipeline-input-card">
                         <img src="glbs/input_front.png" alt="Input front view">
-                        <span class="pipeline-input-label">Input Front</span>
+                        <span class="pipeline-input-label">Input Image</span>
                     </div>
                     <div class="pipeline-arrow">→</div>
                     <div class="glb-card">
@@ -1320,23 +1347,29 @@
                         <span class="glb-label">Front Reconstruction</span>
                     </div>
                 </div>
-                <!-- Branch B: Back -->
+                <!-- Branch B: VGGT from masked inputs -->
                 <div class="pipeline-branch">
-                    <div class="pipeline-input-card">
-                        <img src="glbs/input_back_mask.png" alt="Input back masked">
-                        <span class="pipeline-input-label">Input Back (Masked)</span>
+                    <div class="pipeline-input-cards-stacked">
+                        <div class="pipeline-input-card">
+                            <img src="glbs/input_front.png" alt="Masked input front">
+                            <span class="pipeline-input-label">Masked Input</span>
+                        </div>
+                        <div class="pipeline-input-card">
+                            <img src="glbs/input_back_mask.png" alt="Masked back view">
+                            <span class="pipeline-input-label">Masked Back</span>
+                        </div>
                     </div>
                     <div class="pipeline-arrow">→</div>
                     <div class="glb-card">
                         <model-viewer
-                            src="glbs/scene_back_aligned_max_depth_3.0.glb"
-                            alt="Back-aligned scene reconstruction"
+                            src="glbs/scene_vggt_max_depth_3.0.glb"
+                            alt="VGGT reconstruction"
                             auto-rotate
                             camera-controls
                             shadow-intensity="0"
                             environment-image="neutral"
                         ></model-viewer>
-                        <span class="glb-label">Back Aligned</span>
+                        <span class="glb-label">VGGT Reconstruction</span>
                     </div>
                 </div>
             </div>
@@ -1372,18 +1405,13 @@
 
             <div class="pipeline-arrow-down">↓</div>
 
-            <!-- Row 4: Final output -->
+            <!-- Row 4: Output video -->
             <div class="pipeline-center">
-                <div class="glb-card">
-                    <model-viewer
-                        src="glbs/scene_full_output.glb"
-                        alt="Full output reconstruction"
-                        auto-rotate
-                        camera-controls
-                        shadow-intensity="0"
-                        environment-image="neutral"
-                    ></model-viewer>
-                    <span class="glb-label">Full Output</span>
+                <div class="pipeline-output-video">
+                    <video autoplay muted loop playsinline>
+                        <source src="glbs/output.mp4" type="video/mp4">
+                    </video>
+                    <span class="glb-label">Output Video</span>
                 </div>
             </div>
         </div>
