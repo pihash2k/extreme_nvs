@@ -367,8 +367,119 @@
         }
 
         /* ==============================
-           3D GLB VIEWERS
+           3D GLB VIEWERS & PIPELINE
            ============================== */
+        .pipeline {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .pipeline-branches {
+            display: flex;
+            gap: 40px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .pipeline-branch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .pipeline-input-card {
+            flex-shrink: 0;
+            width: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #000;
+        }
+
+        .pipeline-input-card img {
+            display: block;
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .pipeline-input-label {
+            display: block;
+            text-align: center;
+            padding: 6px 0;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .pipeline-arrow {
+            font-size: 2rem;
+            color: var(--accent);
+            flex-shrink: 0;
+            font-weight: 300;
+        }
+
+        .pipeline-arrow-down {
+            font-size: 2rem;
+            color: var(--accent);
+            margin: 12px 0;
+        }
+
+        .pipeline-merge-arrows {
+            position: relative;
+            width: 60%;
+            height: 30px;
+            margin-top: 16px;
+        }
+
+        .pipeline-merge-line {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .pipeline-merge-line.left {
+            left: 0;
+            border-right: 2px solid var(--accent);
+            border-bottom-right-radius: 12px;
+        }
+
+        .pipeline-merge-line.right {
+            right: 0;
+            border-left: 2px solid var(--accent);
+            border-bottom-left-radius: 12px;
+        }
+
+        .pipeline-center {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .pipeline-center .glb-card {
+            width: 100%;
+            max-width: 550px;
+        }
+
+        .pipeline-process-badge {
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 16px rgba(108, 158, 255, 0.25);
+        }
+
         .glb-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -401,6 +512,20 @@
         }
 
         @media (max-width: 768px) {
+            .pipeline-branches {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+
+            .pipeline-branch {
+                max-width: 100%;
+            }
+
+            .pipeline-merge-arrows {
+                display: none;
+            }
+
             .glb-grid {
                 grid-template-columns: 1fr;
             }
@@ -1167,56 +1292,99 @@
 
     <!-- ============ 3D RECONSTRUCTIONS ============ -->
     <div class="container section">
-        <h2 class="section-heading">3D Reconstructions</h2>
+        <h2 class="section-heading">3D Reconstruction Pipeline</h2>
         <div class="divider"></div>
         <p class="section-subheading">
             Interactive 3D point clouds. Drag to orbit, scroll to zoom, right-click to pan.
         </p>
 
-        <div class="glb-grid">
-            <div class="glb-card">
-                <model-viewer
-                    src="glbs/scene_front_max_depth_3.0.glb"
-                    alt="Front scene reconstruction"
-                    auto-rotate
-                    camera-controls
-                    shadow-intensity="0"
-                    environment-image="neutral"
-                ></model-viewer>
-                <span class="glb-label">Front (Input View)</span>
+        <div class="pipeline">
+            <!-- Row 1: Two parallel branches -->
+            <div class="pipeline-branches">
+                <!-- Branch A: Front -->
+                <div class="pipeline-branch">
+                    <div class="pipeline-input-card">
+                        <img src="glbs/input_front.png" alt="Input front view">
+                        <span class="pipeline-input-label">Input Front</span>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="glb-card">
+                        <model-viewer
+                            src="glbs/scene_front_max_depth_3.0.glb"
+                            alt="Front scene reconstruction"
+                            auto-rotate
+                            camera-controls
+                            shadow-intensity="0"
+                            environment-image="neutral"
+                        ></model-viewer>
+                        <span class="glb-label">Front Reconstruction</span>
+                    </div>
+                </div>
+                <!-- Branch B: Back -->
+                <div class="pipeline-branch">
+                    <div class="pipeline-input-card">
+                        <img src="glbs/input_back_mask.png" alt="Input back masked">
+                        <span class="pipeline-input-label">Input Back (Masked)</span>
+                    </div>
+                    <div class="pipeline-arrow">→</div>
+                    <div class="glb-card">
+                        <model-viewer
+                            src="glbs/scene_back_aligned_max_depth_3.0.glb"
+                            alt="Back-aligned scene reconstruction"
+                            auto-rotate
+                            camera-controls
+                            shadow-intensity="0"
+                            environment-image="neutral"
+                        ></model-viewer>
+                        <span class="glb-label">Back Aligned</span>
+                    </div>
+                </div>
             </div>
-            <div class="glb-card">
-                <model-viewer
-                    src="glbs/scene_back_aligned_max_depth_3.0.glb"
-                    alt="Back-aligned scene reconstruction"
-                    auto-rotate
-                    camera-controls
-                    shadow-intensity="0"
-                    environment-image="neutral"
-                ></model-viewer>
-                <span class="glb-label">Back Aligned</span>
+
+            <!-- Merge arrows -->
+            <div class="pipeline-merge-arrows">
+                <div class="pipeline-merge-line left"></div>
+                <div class="pipeline-merge-line right"></div>
             </div>
-            <div class="glb-card">
-                <model-viewer
-                    src="glbs/scene_combined_max_depth_3.0.glb"
-                    alt="Combined scene reconstruction"
-                    auto-rotate
-                    camera-controls
-                    shadow-intensity="0"
-                    environment-image="neutral"
-                ></model-viewer>
-                <span class="glb-label">Combined</span>
+            <div class="pipeline-arrow-down">↓</div>
+
+            <!-- Row 2: Combined -->
+            <div class="pipeline-center">
+                <div class="glb-card">
+                    <model-viewer
+                        src="glbs/scene_combined_max_depth_3.0.glb"
+                        alt="Combined scene reconstruction"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="0"
+                        environment-image="neutral"
+                    ></model-viewer>
+                    <span class="glb-label">Combined</span>
+                </div>
             </div>
-            <div class="glb-card">
-                <model-viewer
-                    src="glbs/scene_vggt_max_depth_3.0.glb"
-                    alt="VGGT scene reconstruction"
-                    auto-rotate
-                    camera-controls
-                    shadow-intensity="0"
-                    environment-image="neutral"
-                ></model-viewer>
-                <span class="glb-label">VGGT</span>
+
+            <div class="pipeline-arrow-down">↓</div>
+
+            <!-- Row 3: Model processing -->
+            <div class="pipeline-center">
+                <div class="pipeline-process-badge">Video Diffusion Model</div>
+            </div>
+
+            <div class="pipeline-arrow-down">↓</div>
+
+            <!-- Row 4: Final output -->
+            <div class="pipeline-center">
+                <div class="glb-card">
+                    <model-viewer
+                        src="glbs/scene_full_output.glb"
+                        alt="Full output reconstruction"
+                        auto-rotate
+                        camera-controls
+                        shadow-intensity="0"
+                        environment-image="neutral"
+                    ></model-viewer>
+                    <span class="glb-label">Full Output</span>
+                </div>
             </div>
         </div>
     </div>
