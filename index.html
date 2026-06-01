@@ -1275,12 +1275,6 @@
                 </div>
                 <button class="carousel-btn" id="fusionNext">&#8250;</button>
             </div>
-            <div class="carousel-playback">
-                <button class="sync-btn active" id="fusionPlayPause">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
-                    Pause
-                </button>
-            </div>
             <div class="carousel-indicators" id="fusionIndicators"></div>
             <div class="carousel-counter" id="fusionCounter"></div>
         </div>
@@ -1806,6 +1800,18 @@
                                 '<span class="fusion-input-label gt">GT Side</span>' +
                             '</div>' +
                         '</div>' +
+                        '<div class="fusion-output">' +
+                            '<video autoplay muted loop playsinline>' +
+                                '<source src="' + ex.folder + '/output.mp4" type="video/mp4">' +
+                            '</video>' +
+                            '<span class="fusion-output-label">Output — Novel View Synthesis</span>' +
+                        '</div>' +
+                        '<div class="carousel-playback">' +
+                            '<button class="sync-btn active fusion-play-pause-btn">' +
+                                '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>' +
+                                ' Pause' +
+                            '</button>' +
+                        '</div>' +
                         '<div class="fusion-prompt">' +
                             '<span class="fusion-prompt-label">Prompt to ChatGPT &amp; Gemini</span>' +
                             'Use both attached images as visual references to design one cohesive, realistic new car. Create a single unified vehicle based primarily on Image 1. Image 1 should define the car\u2019s overall design language, body proportions, color, front-end design cues, lighting style, material finish, stance, wheel style, and general vehicle identity. Use Image 2 only as an auxiliary reference for rear design inspiration. Do not copy or paste the rear of Image 2 directly. Instead, reinterpret the rear structure, taillight shape, trunk/hatch form, rear bumper geometry, and back-end proportions from Image 2 so they naturally fit the design language of Image 1. Render the final vehicle in a clean side view. The camera should show the full side profile of the new car clearly, with the vehicle centered in the frame. The final vehicle must look like one real production car designed by a single manufacturer. Maintain consistent proportions, body lines, surface continuity, paint finish, reflections, lighting, wheelbase, ride height, and perspective across the entire car. Keep the final image photorealistic and high quality. The result should mainly resemble Image 1, with only naturally integrated rear design influence from Image 2. Use the background/environment from Image 1 as the source for the final scene. Reference assignment: Image 1 = XX, Image 2 = YY.' +
@@ -1829,12 +1835,6 @@
                                 '<img src="' + ex.folder + '/gemini_side.png" alt="Gemini side view">' +
                                 '<span class="fusion-input-label gemini">Gemini — Side</span>' +
                             '</div>' +
-                        '</div>' +
-                        '<div class="fusion-output">' +
-                            '<video autoplay muted loop playsinline>' +
-                                '<source src="' + ex.folder + '/output.mp4" type="video/mp4">' +
-                            '</video>' +
-                            '<span class="fusion-output-label">Output — Novel View Synthesis</span>' +
                         '</div>' +
                     '</div>';
                 fusionSlides.appendChild(slide);
@@ -1873,16 +1873,18 @@
         buildFusionSlides();
 
         /* ----- FUSION PLAY/PAUSE ----- */
-        document.getElementById('fusionPlayPause').addEventListener('click', function () {
+        fusionSlides.addEventListener('click', function (e) {
+            var btn = e.target.closest('.fusion-play-pause-btn');
+            if (!btn) return;
             var currentVid = fusionSlides.querySelectorAll('.carousel-slide')[fusionIndex].querySelector('video');
             if (fusionPlaying) {
                 if (currentVid) currentVid.pause();
-                this.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
-                this.classList.remove('active');
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> Play';
+                btn.classList.remove('active');
             } else {
                 if (currentVid) currentVid.play().catch(function () {});
-                this.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
-                this.classList.add('active');
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause';
+                btn.classList.add('active');
             }
             fusionPlaying = !fusionPlaying;
         });
